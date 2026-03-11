@@ -70,16 +70,19 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!user?.id) return;
     api
-      .get("/api/mood/sessions")
-      .then((res) => setSessions(res.data?.content ?? res.data ?? []))
+      .get("/api/mood/sessions", {
+        params: { userId: user.id, page: 0, size: 10 },
+      })
+      .then((res) => setSessions(res.data?.content ?? []))
       .catch((err) => {
         if (err.response?.status !== 401) {
           setError("Could not load sessions.");
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const handleLogout = () => {
     logout();

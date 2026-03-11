@@ -49,7 +49,7 @@ export default function MoodHistory({ sessions = [] }) {
   return (
     <div className="mh-list">
       {sessions.map((s) => {
-        const emotion = getEmotion(s.valenceScore, s.arousalScore);
+        const emotion = getEmotion(s.valence, s.arousal);
         const goalEmotion = getEmotion(s.goalValence, s.goalArousal);
         const colors = EMOTION_COLORS[emotion] ?? EMOTION_COLORS.Unknown;
         const date = s.createdAt
@@ -67,7 +67,7 @@ export default function MoodHistory({ sessions = [] }) {
           : "";
 
         return (
-          <div key={s.id} className="mh-card">
+          <div key={s.sessionId} className="mh-card">
             {/* Card header */}
             <div className="mh-card-header">
               <div className="mh-card-meta">
@@ -97,8 +97,8 @@ export default function MoodHistory({ sessions = [] }) {
             <div className="mh-scores">
               <div className="mh-scores-col">
                 <p className="mh-scores-heading">Current</p>
-                <ScoreBar label="Valence" value={s.valenceScore} />
-                <ScoreBar label="Arousal" value={s.arousalScore} />
+                <ScoreBar label="Valence" value={s.valence} />
+                <ScoreBar label="Arousal" value={s.arousal} />
               </div>
               <div className="mh-scores-divider" />
               <div className="mh-scores-col">

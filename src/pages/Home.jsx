@@ -1,6 +1,7 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ChatWindow from "../components/Chat/ChatWindow";
 import "./Home.css";
 
 // ── Sonar-ping canvas ────────────────────────────────────────────────────────
@@ -81,10 +82,15 @@ function SonarCanvas() {
 export default function Home() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [_sessionId, setSessionId] = useState(null);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const handleSessionCreated = (id) => {
+    setSessionId(id);
   };
 
   return (
@@ -132,10 +138,7 @@ export default function Home() {
           {/* Left — chat */}
           <div className="home-panel home-panel--chat">
             <p className="home-panel-label">Mood Assistant</p>
-            <p className="home-panel-empty">
-              Chat interface loads here &mdash;&nbsp;
-              <em>type how you feel and let Valence do the rest.</em>
-            </p>
+            <ChatWindow onSessionCreated={handleSessionCreated} />
           </div>
 
           {/* Right — plane + songs stacked */}

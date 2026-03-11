@@ -1,7 +1,7 @@
-export default function MessageBubble({ message, isUser }) {
+export default function MessageBubble({ role, text }) {
   return (
-    <div className={`message-bubble ${isUser ? "user" : "agent"}`}>
-      <p>{message.text}</p>
+    <div className={`message-bubble ${role === "user" ? "user" : "agent"}`}>
+      <p>{text}</p>
     </div>
   );
 }
