@@ -32,18 +32,28 @@ function SonarCanvas() {
       ctx.clearRect(0, 0, w, h);
 
       const now = performance.now();
+      const nowSec = now / 1000;
       const cx = w / 2;
       const cy = h / 2;
       const maxR = Math.sqrt(cx * cx + cy * cy) * 1.05;
 
+      // Breathing envelope — same 5-second cycle as the login soundwave
+      const breathe = Math.pow(
+        Math.sin((nowSec * Math.PI) / 2.5) * 0.5 + 0.5,
+        2.5,
+      );
+      const envelope = 0.03 + breathe * 0.17;
+
+      const speed = 62; // px per second (was 110)
+
       ringsRef.current = ringsRef.current.filter(
-        (ring) => ((now - ring.born) / 1000) * 110 < maxR,
+        (ring) => ((now - ring.born) / 1000) * speed < maxR,
       );
 
       for (const ring of ringsRef.current) {
         const age = (now - ring.born) / 1000;
-        const r = age * 110;
-        const alpha = (1 - r / maxR) * 0.2;
+        const r = age * speed;
+        const alpha = (1 - r / maxR) * envelope;
 
         ctx.beginPath();
         ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -56,7 +66,7 @@ function SonarCanvas() {
     }
 
     rafRef.current = requestAnimationFrame(draw);
-    const interval = setInterval(spawnRing, 2400);
+    const interval = setInterval(spawnRing, 3800);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
