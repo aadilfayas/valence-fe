@@ -1,0 +1,146 @@
+.login-root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #080808;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Soundwave canvas ── */
+.login-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── Card ── */
+.login-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 380px;
+  padding: 2.5rem 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Wordmark ── */
+.login-wordmark {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+}
+
+.login-wordmark span {
+  color: #a78bfa;
+}
+
+/* ── Heading ── */
+.login-card h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+}
+
+/* ── Form ── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.login-field label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.login-field input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.login-field input:focus {
+  border-color: #a78bfa;
+}
+
+/* ── Error ── */
+.login-error {
+  font-size: 0.82rem;
+  color: #f87171;
+  text-align: center;
+  margin: 0;
+}
+
+/* ── Submit ── */
+.login-submit {
+  margin-top: 0.25rem;
+  width: 100%;
+  padding: 0.7rem;
+  background: #a78bfa;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.login-submit:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.login-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Footer link ── */
+.login-footer {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  margin: 0;
+}
+
+.login-footer a {
+  color: #a78bfa;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
