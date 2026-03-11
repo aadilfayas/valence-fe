@@ -2,6 +2,9 @@ import { useRef, useEffect, useCallback, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ChatWindow from "../components/Chat/ChatWindow";
+import RussellPlane from "../components/MoodPlane/RussellPlane";
+import SongCard from "../components/Songs/SongCard";
+import { getRecommendations } from "../services/mood";
 import "./Home.css";
 
 // ── Sonar-ping canvas ────────────────────────────────────────────────────────
@@ -83,14 +86,38 @@ export default function Home() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [_sessionId, setSessionId] = useState(null);
+  const [moodData, setMoodData] = useState({
+    currentMood: null,
+    goalMood: null,
+  });
+  const [recommendations, setRecommendations] = useState([]);
+  const [loadingRecs, setLoadingRecs] = useState(false);
+  const [recError, setRecError] = useState(null);
+  const [activeSongIndex, setActiveSongIndex] = useState(null);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  const handleSessionCreated = (id) => {
+  const handleSessionCreated = useCallback(async (id) => {
     setSessionId(id);
+    setLoadingRecs(true);
+    setRecError(null);
+    setActiveSongIndex(null);
+    setRecommendations([]);
+    try {
+      const recs = await getRecommendations(id);
+      setRecommendations(recs ?? []);
+    } catch {
+      setRecError("Couldn't load recommendations. Please try again.");
+    } finally {
+      setLoadingRecs(false);
+    }
+  }, []);
+
+  const handleMoodAnalyzed = ({ currentMood, goalMood }) => {
+    setMoodData({ currentMood, goalMood });
   };
 
   return (
@@ -138,22 +165,54 @@ export default function Home() {
           {/* Left — chat */}
           <div className="home-panel home-panel--chat">
             <p className="home-panel-label">Mood Assistant</p>
-            <ChatWindow onSessionCreated={handleSessionCreated} />
+            <ChatWindow
+              onSessionCreated={handleSessionCreated}
+              onMoodAnalyzed={handleMoodAnalyzed}
+            />
           </div>
 
           {/* Right — plane + songs stacked */}
           <div className="home-panel-stack">
             <div className="home-panel home-panel--plane">
               <p className="home-panel-label">Mood Plane</p>
-              <p className="home-panel-empty">
-                Russell&rsquo;s Circumplex renders here.
-              </p>
+              <RussellPlane
+                currentMood={moodData.currentMood}
+                goalMood={moodData.goalMood}
+                recommendations={recommendations}
+                activeSongIndex={activeSongIndex}
+              />
             </div>
             <div className="home-panel home-panel--songs">
               <p className="home-panel-label">Recommendations</p>
-              <p className="home-panel-empty">
-                Your personalised path of songs appears here.
-              </p>
+              {loadingRecs && (
+                <div className="recs-loading">
+                  <span className="recs-spinner" />
+                  <span>Generating your path…</span>
+                </div>
+              )}
+              {recError && !loadingRecs && (
+                <p className="recs-error">{recError}</p>
+              )}
+              {!loadingRecs && !recError && recommendations.length === 0 && (
+                <p className="home-panel-empty">
+                  Your personalised path of songs appears here.
+                </p>
+              )}
+              {!loadingRecs && recommendations.length > 0 && (
+                <div className="recs-list">
+                  {recommendations.map((track, i) => (
+                    <SongCard
+                      key={track.id ?? track.spotifyTrackId ?? i}
+                      track={track}
+                      stepNumber={i + 1}
+                      active={activeSongIndex === i}
+                      onClick={() =>
+                        setActiveSongIndex((prev) => (prev === i ? null : i))
+                      }
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

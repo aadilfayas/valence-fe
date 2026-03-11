@@ -368,3 +368,252 @@
     min-height: 360px;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   RussellPlane component
+══════════════════════════════════════════════════════════════ */
+.russell-plane {
+  position: relative;
+  flex: 1;
+}
+
+.russell-plane--empty {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.russell-plane-hint {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.16);
+  text-align: center;
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Recommendations panel — loading / error states
+══════════════════════════════════════════════════════════════ */
+
+.home-panel--songs {
+  /* override fixed min-height when songs are present */
+  min-height: unset;
+}
+
+.recs-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.82rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.recs-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(74, 143, 194, 0.2);
+  border-top-color: #4a8fc2;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+.recs-error {
+  font-size: 0.82rem;
+  color: #f87171;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ── Scrollable list ── */
+.recs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.recs-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.recs-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recs-list::-webkit-scrollbar-thumb {
+  background: rgba(74, 143, 194, 0.18);
+  border-radius: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SongCard component
+══════════════════════════════════════════════════════════════ */
+
+.song-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  outline: none;
+}
+
+.song-card:hover {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(74, 143, 194, 0.22);
+}
+
+.song-card:focus-visible {
+  border-color: rgba(74, 143, 194, 0.5);
+}
+
+.song-card--active {
+  background: rgba(74, 143, 194, 0.07);
+  border-color: rgba(74, 143, 194, 0.35);
+}
+
+/* ── Header row: step badge + "Now Playing" pill ── */
+.song-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.song-card-step {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  user-select: none;
+}
+
+.song-card-playing {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4a8fc2;
+  background: rgba(74, 143, 194, 0.1);
+  border: 1px solid rgba(74, 143, 194, 0.22);
+  border-radius: 50px;
+  padding: 0.15rem 0.55rem;
+  user-select: none;
+}
+
+/* ── Spotify embed ── */
+.song-card-embed {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+}
+
+/* ── Track meta ── */
+.song-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.song-card-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-card-artist {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-card-link {
+  font-size: 0.72rem;
+  color: rgba(74, 143, 194, 0.7);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  margin-top: 0.1rem;
+  transition: color 0.18s;
+  align-self: flex-start;
+}
+
+.song-card-link:hover {
+  color: #4a8fc2;
+}
+
+/* ── Valence / Energy bars ── */
+.song-card-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.song-card-bar-row {
+  display: grid;
+  grid-template-columns: 44px 1fr 34px;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.song-card-bar-label {
+  font-size: 0.66rem;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.song-card-bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.song-card-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.song-card-bar-fill--valence {
+  background: linear-gradient(90deg, #4a8fc2, #7bc0f7);
+}
+
+.song-card-bar-fill--energy {
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+}
+
+.song-card-bar-value {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.22);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}

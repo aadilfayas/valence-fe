@@ -31,3 +31,8 @@ export const getMoodSessions = async (userId, page = 0, size = 10) => {
   });
   return res.data; // Page<MoodSessionHistoryResponse>
 };
+
+export const getRecommendations = async (sessionId) => {
+  const res = await api.get(`/api/recommendations/${sessionId}`);
+  return res.data; // Array<{ spotifyTrackId, trackName, artist, valence, energy, positionInPath }>
+};
