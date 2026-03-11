@@ -1,9 +1,9 @@
-@keyframes loginEnter {
-  from { opacity: 0; transform: translateX(-18px); }
+@keyframes registerEnter {
+  from { opacity: 0; transform: translateX(18px); }
   to   { opacity: 1; transform: none; }
 }
 
-.login-root {
+.register-root {
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -12,11 +12,11 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  animation: loginEnter 0.45s ease forwards;
+  animation: registerEnter 0.45s ease forwards;
 }
 
-/* ── Soundwave canvas ── */
-.login-canvas {
+/* ── Radial canvas ── */
+.register-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -25,82 +25,92 @@
 }
 
 /* ── Card ── */
-.login-card {
+.register-card {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
   padding: 2.5rem 2rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.4rem;
 }
 
 /* ── Wordmark ── */
-.login-wordmark {
+.register-wordmark {
   font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.88);
   text-align: center;
 }
 
-.login-wordmark span {
+.register-wordmark span {
   color: #4a8fc2;
 }
 
+/* ── Tagline ── */
+.register-tagline {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  margin: -1rem 0 0;
+}
+
 /* ── Heading ── */
-.login-card h2 {
+.register-card h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.82);
   text-align: center;
 }
 
 /* ── Form ── */
-.login-form {
+.register-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
-.login-field {
+.register-field {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.login-field label {
+.register-field label {
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.32);
 }
 
-.login-field input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.register-field input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 8px;
   padding: 0.65rem 0.85rem;
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.82);
   outline: none;
   transition: border-color 0.2s;
   font-family: inherit;
 }
 
-.login-field input:focus {
+.register-field input:focus {
   border-color: #4a8fc2;
 }
 
 /* ── Error ── */
-.login-error {
+.register-error {
   font-size: 0.82rem;
   color: #f87171;
   text-align: center;
@@ -108,7 +118,7 @@
 }
 
 /* ── Submit ── */
-.login-submit {
+.register-submit {
   margin-top: 0.25rem;
   width: 100%;
   padding: 0.7rem;
@@ -126,31 +136,31 @@
     transform 0.15s;
 }
 
-.login-submit:hover:not(:disabled) {
+.register-submit:hover:not(:disabled) {
   background: #1a3a58;
   border-color: rgba(74, 143, 194, 0.5);
   transform: translateY(-1px);
 }
 
-.login-submit:disabled {
-  opacity: 0.45;
+.register-submit:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 /* ── Footer link ── */
-.login-footer {
+.register-footer {
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.28);
   text-align: center;
   margin: 0;
 }
 
-.login-footer a {
+.register-footer a {
   color: #4a8fc2;
   font-weight: 500;
   text-decoration: none;
 }
 
-.login-footer a:hover {
+.register-footer a:hover {
   text-decoration: underline;
 }

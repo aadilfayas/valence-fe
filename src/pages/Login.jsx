@@ -14,7 +14,6 @@ function SoundwaveCanvas() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    // Resize to fill parent
     const { offsetWidth: w, offsetHeight: h } = canvas.parentElement;
     if (canvas.width !== w || canvas.height !== h) {
       canvas.width = w;
@@ -30,31 +29,33 @@ function SoundwaveCanvas() {
     const barWidth = 3;
     const gap = w / barCount;
 
+    // Breathing envelope: slow 5s cycle, nearly vanishes at trough
+    const breathe = Math.pow(Math.sin(now * Math.PI / 2.5) * 0.5 + 0.5, 2.5);
+    const envelope = 0.03 + breathe * 0.55;
+
     for (let i = 0; i < barCount; i++) {
       const x = (i + 0.5) * gap;
-
-      // Primary slow wave + fast ripple + small noise layer
       const phase = (i / barCount) * Math.PI * 2;
+
       const primary = Math.sin(phase * 3 - now * 1.6) * 0.55;
       const ripple = Math.sin(phase * 7 - now * 2.8) * 0.25;
       const noise = Math.sin(phase * 13 + now * 0.9) * 0.1;
-      const amplitude = (primary + ripple + noise + 1) / 2; // 0–1
+      const amplitude = (primary + ripple + noise + 1) / 2;
 
       const maxBarH = h * 0.38;
       const minBarH = h * 0.015;
       const barH = minBarH + amplitude * (maxBarH - minBarH);
 
-      // Distance from center for opacity falloff
       const distRatio = Math.abs(x - cx) / cx;
-      const alpha = 0.75 - distRatio * 0.5;
+      const alpha = envelope * (0.85 - distRatio * 0.52);
 
-      // Gradient: violet at tip → transparent base
+      // Steel blue-grey darkwave gradient
       const grad = ctx.createLinearGradient(x, cy - barH, x, cy + barH);
-      grad.addColorStop(0, `rgba(167, 139, 250, ${alpha})`);
-      grad.addColorStop(0.45, `rgba(139, 92, 246, ${alpha * 0.6})`);
-      grad.addColorStop(0.5, `rgba(109, 40, 217, ${alpha * 0.15})`);
-      grad.addColorStop(0.55, `rgba(139, 92, 246, ${alpha * 0.6})`);
-      grad.addColorStop(1, `rgba(167, 139, 250, ${alpha})`);
+      grad.addColorStop(0,    `rgba(74, 143, 194, ${alpha})`);
+      grad.addColorStop(0.45, `rgba(38, 82, 128,  ${alpha * 0.55})`);
+      grad.addColorStop(0.5,  `rgba(16, 40, 72,   ${alpha * 0.07})`);
+      grad.addColorStop(0.55, `rgba(38, 82, 128,  ${alpha * 0.55})`);
+      grad.addColorStop(1,    `rgba(74, 143, 194, ${alpha})`);
 
       ctx.fillStyle = grad;
       const rx = barWidth / 2;
