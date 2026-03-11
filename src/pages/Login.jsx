@@ -30,7 +30,7 @@ function SoundwaveCanvas() {
     const gap = w / barCount;
 
     // Breathing envelope: slow 5s cycle, nearly vanishes at trough
-    const breathe = Math.pow(Math.sin(now * Math.PI / 2.5) * 0.5 + 0.5, 2.5);
+    const breathe = Math.pow(Math.sin((now * Math.PI) / 2.5) * 0.5 + 0.5, 2.5);
     const envelope = 0.03 + breathe * 0.55;
 
     for (let i = 0; i < barCount; i++) {
@@ -51,11 +51,11 @@ function SoundwaveCanvas() {
 
       // Steel blue-grey darkwave gradient
       const grad = ctx.createLinearGradient(x, cy - barH, x, cy + barH);
-      grad.addColorStop(0,    `rgba(74, 143, 194, ${alpha})`);
+      grad.addColorStop(0, `rgba(74, 143, 194, ${alpha})`);
       grad.addColorStop(0.45, `rgba(38, 82, 128,  ${alpha * 0.55})`);
-      grad.addColorStop(0.5,  `rgba(16, 40, 72,   ${alpha * 0.07})`);
+      grad.addColorStop(0.5, `rgba(16, 40, 72,   ${alpha * 0.07})`);
       grad.addColorStop(0.55, `rgba(38, 82, 128,  ${alpha * 0.55})`);
-      grad.addColorStop(1,    `rgba(74, 143, 194, ${alpha})`);
+      grad.addColorStop(1, `rgba(74, 143, 194, ${alpha})`);
 
       ctx.fillStyle = grad;
       const rx = barWidth / 2;
@@ -91,7 +91,7 @@ export default function Login() {
     setLoading(true);
     try {
       const data = await loginRequest(email, password);
-      login(data.token, data.user);
+      login(data.token, { email: data.email, displayName: data.displayName });
       navigate("/");
     } catch (err) {
       setError(

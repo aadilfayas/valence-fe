@@ -28,7 +28,7 @@ function RadialWaveCanvas() {
     const cy = h / 2;
 
     // Breathing envelope: ~5s cycle, deep silence at trough
-    const breathe = Math.pow(Math.sin(now * Math.PI / 2.5) * 0.5 + 0.5, 2.5);
+    const breathe = Math.pow(Math.sin((now * Math.PI) / 2.5) * 0.5 + 0.5, 2.5);
     const envelope = 0.03 + breathe * 0.52;
 
     const barCount = 160;
@@ -43,9 +43,9 @@ function RadialWaveCanvas() {
       const angle = (i / barCount) * Math.PI * 2 - Math.PI / 2;
       const phase = (i / barCount) * Math.PI * 2;
 
-      const primary = Math.sin(phase * 4 - now * 1.3) * 0.50;
-      const ripple  = Math.sin(phase * 9 - now * 2.5) * 0.28;
-      const micro   = Math.sin(phase * 17 + now * 0.7) * 0.10;
+      const primary = Math.sin(phase * 4 - now * 1.3) * 0.5;
+      const ripple = Math.sin(phase * 9 - now * 2.5) * 0.28;
+      const micro = Math.sin(phase * 17 + now * 0.7) * 0.1;
       const amplitude = (primary + ripple + micro + 1) / 2;
 
       const barH = minBarH + amplitude * (maxBarH - minBarH);
@@ -60,9 +60,9 @@ function RadialWaveCanvas() {
       const alpha = envelope * (0.35 + shimmer * 0.55);
 
       const grad = ctx.createLinearGradient(x1, y1, x2, y2);
-      grad.addColorStop(0,   `rgba(38, 80, 122,  ${alpha * 0.35})`);
+      grad.addColorStop(0, `rgba(38, 80, 122,  ${alpha * 0.35})`);
       grad.addColorStop(0.5, `rgba(60, 115, 170, ${alpha})`);
-      grad.addColorStop(1,   `rgba(110, 170, 215,${alpha * 0.65})`);
+      grad.addColorStop(1, `rgba(110, 170, 215,${alpha * 0.65})`);
 
       ctx.lineWidth = 1.8;
       ctx.strokeStyle = grad;
@@ -107,7 +107,7 @@ export default function Register() {
     setLoading(true);
     try {
       const data = await registerRequest(email, password, displayName);
-      login(data.token, data.user);
+      login(data.token, { email: data.email, displayName: data.displayName });
       navigate("/");
     } catch (err) {
       setError(
