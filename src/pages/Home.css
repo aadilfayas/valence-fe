@@ -399,6 +399,83 @@
   min-height: unset;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   Mood Plane HUD — fixed mini-map overlay
+══════════════════════════════════════════════════════════════ */
+
+@keyframes hudGlow {
+  0%,
+  100% {
+    border-color: rgba(74, 143, 194, 0.18);
+    box-shadow: 0 0 20px rgba(74, 143, 194, 0.04);
+  }
+  50% {
+    border-color: rgba(74, 143, 194, 0.38);
+    box-shadow: 0 0 32px rgba(74, 143, 194, 0.1);
+  }
+}
+
+.home-hud {
+  position: fixed;
+  top: 74px;
+  right: 1.75rem;
+  width: 300px;
+  z-index: 90;
+  background: rgba(4, 6, 12, 0.84);
+  border: 1px solid rgba(74, 143, 194, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 0.85rem 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  animation: hudGlow 4s ease-in-out infinite;
+  pointer-events: none; /* let clicks fall through to content behind */
+}
+
+/* Corner bracket accents — top-left */
+.home-hud::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid rgba(74, 143, 194, 0.55);
+  border-left: 2px solid rgba(74, 143, 194, 0.55);
+  border-radius: 4px 0 0 0;
+  pointer-events: none;
+}
+
+/* Corner bracket accents — bottom-right */
+.home-hud::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 14px;
+  height: 14px;
+  border-bottom: 2px solid rgba(74, 143, 194, 0.55);
+  border-right: 2px solid rgba(74, 143, 194, 0.55);
+  border-radius: 0 0 4px 0;
+  pointer-events: none;
+}
+
+.home-hud-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(74, 143, 194, 0.65);
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .home-hud {
+    display: none;
+  }
+}
+
 .recs-loading {
   display: flex;
   align-items: center;

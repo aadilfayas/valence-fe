@@ -73,6 +73,71 @@ export default function RussellPlane({
 }) {
   const hasMood = currentMood && goalMood;
 
+  // ── Idle random-walk animation (shown when no mood data) ───────────────────
+  const idleRafRef = useRef(null);
+  const idleTweenRef = useRef({
+    from: { x: 0.18, y: 0.06 },
+    to: { x: 0.18, y: 0.06 },
+    startTime: null,
+    duration: 2000,
+  });
+  const idleTrailRef = useRef([{ x: 0.18, y: 0.06 }]);
+  const [idleAnim, setIdleAnim] = useState(null);
+
+  useEffect(() => {
+    if (hasMood) {
+      if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
+      setIdleAnim(null);
+      return;
+    }
+
+    function pickTarget() {
+      return {
+        x: parseFloat((Math.random() * 1.5 - 0.75).toFixed(3)),
+        y: parseFloat((Math.random() * 1.5 - 0.75).toFixed(3)),
+      };
+    }
+
+    const tw = idleTweenRef.current;
+    tw.to = pickTarget();
+    tw.startTime = null;
+    tw.duration = 2000 + Math.random() * 1200;
+
+    function animate(now) {
+      if (tw.startTime == null) tw.startTime = now;
+      const t = Math.min((now - tw.startTime) / tw.duration, 1);
+      const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      const pos = {
+        x: +(tw.from.x + (tw.to.x - tw.from.x) * ease).toFixed(4),
+        y: +(tw.from.y + (tw.to.y - tw.from.y) * ease).toFixed(4),
+      };
+
+      const trail = idleTrailRef.current;
+      const last = trail[trail.length - 1];
+      if (Math.hypot(pos.x - last.x, pos.y - last.y) > 0.012) {
+        trail.push({ ...pos });
+        if (trail.length > 24) trail.shift();
+      }
+      setIdleAnim({ dot: pos, trail: trail.slice() });
+
+      if (t >= 1) {
+        tw.from = { ...tw.to };
+        tw.to = pickTarget();
+        tw.startTime = now;
+        tw.duration = 1800 + Math.random() * 1400;
+      }
+
+      idleRafRef.current = requestAnimationFrame(animate);
+    }
+
+    idleRafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (idleRafRef.current) cancelAnimationFrame(idleRafRef.current);
+    };
+  }, [hasMood]);
+  // ──────────────────────────────────────────────────────────────────────────
+
   // rAF-driven animation: tracks the current rendered position of the blue dot
   const rafRef = useRef(null);
   const fromPosRef = useRef(null); // position at start of latest tween
@@ -244,17 +309,39 @@ export default function RussellPlane({
     [],
   );
 
+  const idleData = useMemo(() => {
+    if (hasMood || !idleAnim) return { datasets: [] };
+    return {
+      datasets: [
+        {
+          label: "Signal",
+          data: idleAnim.trail,
+          showLine: true,
+          borderColor: "rgba(74,143,194,0.20)",
+          borderWidth: 1.2,
+          backgroundColor: "transparent",
+          pointRadius: 0,
+          tension: 0.4,
+          order: 2,
+        },
+        {
+          label: "Live",
+          data: [idleAnim.dot],
+          backgroundColor: "rgba(74,143,194,0.55)",
+          borderColor: "rgba(74,143,194,0.15)",
+          borderWidth: 7,
+          pointRadius: 4,
+          pointHoverRadius: 5,
+          order: 1,
+        },
+      ],
+    };
+  }, [hasMood, idleAnim]);
+
   if (!hasMood) {
     return (
       <div className="russell-plane russell-plane--empty">
-        <Scatter
-          data={{ datasets: [] }}
-          options={options}
-          plugins={[quadrantPlugin]}
-        />
-        <p className="russell-plane-hint">
-          Complete the chat to see your mood plotted here.
-        </p>
+        <Scatter data={idleData} options={options} plugins={[quadrantPlugin]} />
       </div>
     );
   }

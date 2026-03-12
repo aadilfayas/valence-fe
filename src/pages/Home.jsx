@@ -116,6 +116,7 @@ export default function Home() {
   }, [navigate]);
 
   const handleSessionCreated = useCallback(async (id) => {
+    console.log("[Valence] handleSessionCreated called with id:", id);
     setSessionId(id);
     setLoadingRecs(true);
     setRecError(null);
@@ -123,8 +124,12 @@ export default function Home() {
     setRecommendations([]);
     try {
       const recs = await getRecommendations(id);
-      setRecommendations(recs ?? []);
-    } catch {
+      console.log("[Valence] getRecommendations raw response:", recs);
+      const list = Array.isArray(recs) ? recs : [];
+      console.log("[Valence] setting recommendations, count:", list.length);
+      setRecommendations(list);
+    } catch (err) {
+      console.error("[Valence] getRecommendations error:", err);
       setRecError("Couldn't load recommendations. Please try again.");
     } finally {
       setLoadingRecs(false);
@@ -138,6 +143,17 @@ export default function Home() {
   return (
     <div className="home-root">
       <SonarCanvas />
+
+      {/* ── Mood Plane HUD (fixed mini-map) ── */}
+      <div className="home-hud">
+        <p className="home-hud-label">Mood Plane</p>
+        <RussellPlane
+          currentMood={moodData.currentMood}
+          goalMood={moodData.goalMood}
+          recommendations={recommendations}
+          activeSongIndex={activeSongIndex}
+        />
+      </div>
 
       {/* ── Sticky header ── */}
       <header className="home-header">
@@ -186,17 +202,8 @@ export default function Home() {
             />
           </div>
 
-          {/* Right — plane + songs stacked */}
+          {/* Right — recommendations */}
           <div className="home-panel-stack">
-            <div className="home-panel home-panel--plane">
-              <p className="home-panel-label">Mood Plane</p>
-              <RussellPlane
-                currentMood={moodData.currentMood}
-                goalMood={moodData.goalMood}
-                recommendations={recommendations}
-                activeSongIndex={activeSongIndex}
-              />
-            </div>
             <div className="home-panel home-panel--songs">
               <p className="home-panel-label">Recommendations</p>
               {loadingRecs && (

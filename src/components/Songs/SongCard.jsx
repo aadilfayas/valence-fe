@@ -36,7 +36,9 @@ export default function SongCard({ track, active, stepNumber, onClick }) {
 
       <div className="song-card-meta">
         <p className="song-card-title">{track.trackName}</p>
-        <p className="song-card-artist">{track.artist}</p>
+        <p className="song-card-artist">
+          {track.artist?.split(";").join(", ")}
+        </p>
         <a
           href={openUrl}
           target="_blank"
