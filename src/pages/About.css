@@ -13,7 +13,7 @@
   }
 }
 
-@keyframes percivalShimmer {
+@keyframes perzivalShimmer {
   0%,
   100% {
     opacity: 0.6;
@@ -304,8 +304,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* ── Percival shout-out ──────────────────────────────────────── */
-.about-percival {
+.about-perzival {
   border-radius: 14px;
   background: rgba(167, 139, 250, 0.04);
   border: 1px solid rgba(167, 139, 250, 0.14);
@@ -313,8 +312,7 @@
   position: relative;
   overflow: hidden;
 }
-
-.about-percival::before {
+.about-perzival::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -325,28 +323,24 @@
   );
   pointer-events: none;
 }
-
-.about-percival-inner {
+.about-perzival-inner {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
 }
-
-.about-percival-glyph {
+.about-perzival-glyph {
   font-size: 1.2rem;
   color: rgba(167, 139, 250, 0.7);
   flex-shrink: 0;
   margin-top: 0.05rem;
-  animation: percivalShimmer 3.5s ease-in-out infinite;
+  animation: perzivalShimmer 3.5s ease-in-out infinite;
 }
-
-.about-percival-text {
+.about-perzival-text {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
-
-.about-percival-name {
+.about-perzival-name {
   margin: 0;
   font-size: 0.82rem;
   font-weight: 500;
@@ -354,8 +348,7 @@
   text-transform: uppercase;
   color: rgba(167, 139, 250, 0.8);
 }
-
-.about-percival-note {
+.about-perzival-note {
   margin: 0;
   font-size: 0.85rem;
   line-height: 1.75;

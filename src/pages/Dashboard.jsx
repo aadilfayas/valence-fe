@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import MoodHistory from "../components/Dashboard/MoodHistory";
-import api from "../services/api";
+import { getMoodSessions } from "../services/mood";
 import "./Dashboard.css";
 
 // ── Particle-drift canvas ────────────────────────────────────────────────────
@@ -68,21 +68,27 @@ export default function Dashboard() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
   useEffect(() => {
     if (!user?.id) return;
-    api
-      .get("/api/mood/sessions", {
-        params: { userId: user.id, page: 0, size: 10 },
+    setLoading(true);
+    setError(null);
+    getMoodSessions(user.id, page, 8)
+      .then((data) => {
+        setSessions(data?.content ?? []);
+        setTotalPages(data?.totalPages ?? 0);
+        setTotalElements(data?.totalElements ?? 0);
       })
-      .then((res) => setSessions(res.data?.content ?? []))
       .catch((err) => {
         if (err.response?.status !== 401) {
           setError("Could not load sessions.");
         }
       })
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user, page]);
 
   const handleLogout = () => {
     logout();
@@ -121,16 +127,22 @@ export default function Dashboard() {
             Every session you&rsquo;ve had with Valence &mdash; your starting
             state, your goal, and the songs that bridged them.
           </p>
+          {!loading && !error && totalElements > 0 && (
+            <p className="dashboard-session-count">
+              {totalElements} session{totalElements !== 1 ? "s" : ""}
+            </p>
+          )}
         </div>
 
         <section className="dashboard-section">
-          {loading && (
-            <p className="dashboard-status">Loading sessions&hellip;</p>
-          )}
-          {!loading && error && (
-            <p className="dashboard-status dashboard-status--error">{error}</p>
-          )}
-          {!loading && !error && <MoodHistory sessions={sessions} />}
+          <MoodHistory
+            sessions={sessions}
+            loading={loading}
+            error={error}
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </section>
       </main>
     </div>

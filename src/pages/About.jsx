@@ -320,7 +320,7 @@ export default function About() {
               </a>
               <span className="about-link-sep" />
               <a
-                href="https://linkedin.com/in/aadilf"
+                href="https://linkedin.com/in/aadilfayas"
                 className="about-link"
                 target="_blank"
                 rel="noreferrer"
@@ -330,13 +330,13 @@ export default function About() {
             </div>
           </div>
 
-          {/* Percival shout-out */}
-          <div className="about-percival">
-            <div className="about-percival-inner">
-              <span className="about-percival-glyph">✦</span>
-              <div className="about-percival-text">
-                <p className="about-percival-name">Percival</p>
-                <p className="about-percival-note">
+          {/* Perzival shout-out */}
+          <div className="about-perzival">
+            <div className="about-perzival-inner">
+              <span className="about-perzival-glyph">✦</span>
+              <div className="about-perzival-text">
+                <p className="about-perzival-name">Perzival</p>
+                <p className="about-perzival-note">
                   College friend and teammate from the original Valence project.
                   He co-architected the early prototype and kept the coffee
                   flowing through many late-night debugging sessions — this
@@ -350,7 +350,7 @@ export default function About() {
           <div className="about-egg">
             <span className="about-egg-label">easter egg unlocked</span>
             <p className="about-egg-hint">
-              A quiet nod to Percival — college friend and original teammate:
+              A quiet nod to Perzival — college friend and original teammate:
               Val<em>e</em>nce &thinsp;&times;3
             </p>
           </div>
