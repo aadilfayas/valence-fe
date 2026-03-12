@@ -100,6 +100,21 @@ export default function Home() {
     navigate("/login");
   };
 
+  const eggRef = useRef({ count: 0, timer: null });
+  const handleEasterEgg = useCallback(() => {
+    const egg = eggRef.current;
+    egg.count += 1;
+    if (egg.timer) clearTimeout(egg.timer);
+    if (egg.count >= 3) {
+      egg.count = 0;
+      navigate("/about");
+    } else {
+      egg.timer = setTimeout(() => {
+        egg.count = 0;
+      }, 1500);
+    }
+  }, [navigate]);
+
   const handleSessionCreated = useCallback(async (id) => {
     setSessionId(id);
     setLoadingRecs(true);
@@ -127,7 +142,7 @@ export default function Home() {
       {/* ── Sticky header ── */}
       <header className="home-header">
         <p className="home-wordmark">
-          Val<span>e</span>nce
+          Val<span onClick={handleEasterEgg}>e</span>nce
         </p>
         <nav className="home-nav">
           <Link to="/dashboard" className="home-nav-link">

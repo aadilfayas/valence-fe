@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import About from "./pages/About";
 import "./App.css";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/about" element={<About />} />
     </Routes>
   );
 }
