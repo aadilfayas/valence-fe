@@ -7,7 +7,7 @@ import SongCard from "../components/Songs/SongCard";
 import { getRecommendations } from "../services/mood";
 import "./Home.css";
 
-// ── Sonar-ping canvas ────────────────────────────────────────────────────────
+// ── Sonar-ping canvas ────────────────────────────────────────────────────────────────────────────
 // Concentric rings expand from the centre, fading as they grow.
 // Visually distinct from the auth-page animations (soundwave / radial).
 function SonarCanvas() {
