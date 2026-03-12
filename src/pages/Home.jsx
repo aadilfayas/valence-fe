@@ -144,17 +144,6 @@ export default function Home() {
     <div className="home-root">
       <SonarCanvas />
 
-      {/* ── Mood Plane HUD (fixed mini-map) ── */}
-      <div className="home-hud">
-        <p className="home-hud-label">Mood Plane</p>
-        <RussellPlane
-          currentMood={moodData.currentMood}
-          goalMood={moodData.goalMood}
-          recommendations={recommendations}
-          activeSongIndex={activeSongIndex}
-        />
-      </div>
-
       {/* ── Sticky header ── */}
       <header className="home-header">
         <p className="home-wordmark">
@@ -202,8 +191,17 @@ export default function Home() {
             />
           </div>
 
-          {/* Right — recommendations */}
+          {/* Right — mood plane + recommendations */}
           <div className="home-panel-stack">
+            <div className="home-panel home-panel--plane">
+              <p className="home-panel-label">Mood Plane</p>
+              <RussellPlane
+                currentMood={moodData.currentMood}
+                goalMood={moodData.goalMood}
+                recommendations={recommendations}
+                activeSongIndex={activeSongIndex}
+              />
+            </div>
             <div className="home-panel home-panel--songs">
               <p className="home-panel-label">Recommendations</p>
               {loadingRecs && (

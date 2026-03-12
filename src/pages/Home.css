@@ -16,7 +16,7 @@
   background: #04060c;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
   animation: homeEnter 0.5s ease forwards;
 }
 
@@ -163,9 +163,10 @@
 /* ── Panel grid ── */
 .home-panels {
   display: grid;
-  grid-template-columns: 1fr 370px;
+  grid-template-columns: 1fr 400px;
   gap: 1.2rem;
   flex: 1;
+  align-items: start;
 }
 
 @media (max-width: 860px) {
