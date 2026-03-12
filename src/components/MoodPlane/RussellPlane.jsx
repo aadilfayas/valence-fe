@@ -248,8 +248,7 @@ export default function RussellPlane({
   const options = useMemo(
     () => ({
       responsive: true,
-      maintainAspectRatio: true,
-      aspectRatio: 1,
+      maintainAspectRatio: false,
       animation: false,
       scales: {
         x: {

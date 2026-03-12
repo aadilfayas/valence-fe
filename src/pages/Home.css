@@ -199,7 +199,8 @@
 }
 
 .home-panel--plane {
-  height: 320px;
+  height: 340px;
+  overflow: hidden;
 }
 
 .home-panel--songs {
@@ -376,12 +377,14 @@
 .russell-plane {
   position: relative;
   flex: 1;
+  min-height: 0;
 }
 
 .russell-plane--empty {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  min-height: 0;
 }
 
 .russell-plane-hint {
