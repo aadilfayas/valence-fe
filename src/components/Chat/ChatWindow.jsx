@@ -96,14 +96,12 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
           /* non-fatal — session still proceeds */
         }
 
-        const sessionResponse = await createMoodSession({
+        const { sessionId } = await createMoodSession({
           userId: user.id,
           feelingMessage: newAnswers[0],
           triggerMessage: newAnswers[1],
           goalMessage: newAnswers[2],
         });
-        console.log("[Valence] createMoodSession response:", sessionResponse);
-        const sessionId = sessionResponse?.sessionId;
 
         if (currentMood && goalMood) {
           onMoodAnalyzed?.({ currentMood, goalMood });

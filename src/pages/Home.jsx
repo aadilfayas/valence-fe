@@ -116,7 +116,6 @@ export default function Home() {
   }, [navigate]);
 
   const handleSessionCreated = useCallback(async (id) => {
-    console.log("[Valence] handleSessionCreated called with id:", id);
     setSessionId(id);
     setLoadingRecs(true);
     setRecError(null);
@@ -124,9 +123,7 @@ export default function Home() {
     setRecommendations([]);
     try {
       const recs = await getRecommendations(id);
-      console.log("[Valence] getRecommendations raw response:", recs);
-      const list = Array.isArray(recs) ? recs : [];
-      console.log("[Valence] setting recommendations, count:", list.length);
+      const list = Array.isArray(recs) ? recs : (recs?.tracks ?? []);
       setRecommendations(list);
     } catch (err) {
       console.error("[Valence] getRecommendations error:", err);
