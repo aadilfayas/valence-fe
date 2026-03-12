@@ -337,9 +337,10 @@ export default function About() {
               <div className="about-percival-text">
                 <p className="about-percival-name">Percival</p>
                 <p className="about-percival-note">
-                  The silent co-author of every late-night debug session. Best
-                  rubber duck I&rsquo;ve ever had &mdash; and considerably more
-                  opinionated.
+                  College friend and teammate from the original Valence project.
+                  He co-architected the early prototype and kept the coffee
+                  flowing through many late-night debugging sessions — this
+                  project carries a few of his fingerprints.
                 </p>
               </div>
             </div>
@@ -349,6 +350,7 @@ export default function About() {
           <div className="about-egg">
             <span className="about-egg-label">easter egg unlocked</span>
             <p className="about-egg-hint">
+              A quiet nod to Percival — college friend and original teammate:
               Val<em>e</em>nce &thinsp;&times;3
             </p>
           </div>
