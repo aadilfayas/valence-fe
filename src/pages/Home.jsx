@@ -162,6 +162,17 @@ export default function Home() {
         </nav>
       </header>
 
+      {/* ── Mood Plane HUD — fixed top-right mini-map ── */}
+      <div className="home-hud">
+        <p className="home-hud-label">Mood Plane</p>
+        <RussellPlane
+          currentMood={moodData.currentMood}
+          goalMood={moodData.goalMood}
+          recommendations={recommendations}
+          activeSongIndex={activeSongIndex}
+        />
+      </div>
+
       {/* ── Main content ── */}
       <main className="home-main">
         {/* Hero */}
@@ -179,19 +190,8 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Mood Plane — full width above panels */}
-        <div className="home-panel home-panel--plane">
-          <p className="home-panel-label">Mood Plane</p>
-          <RussellPlane
-            currentMood={moodData.currentMood}
-            goalMood={moodData.goalMood}
-            recommendations={recommendations}
-            activeSongIndex={activeSongIndex}
-          />
-        </div>
-
-        {/* Panel grid */}
-        <div className="home-panels">
+        {/* Two-column layout: Chat left, Recommendations right */}
+        <div className="home-columns">
           {/* Left — chat */}
           <div className="home-panel home-panel--chat">
             <p className="home-panel-label">Mood Assistant</p>
@@ -201,78 +201,82 @@ export default function Home() {
             />
           </div>
 
-          {/* Right — recommendations carousel */}
-          <div className="home-panel home-panel--songs">
-            <p className="home-panel-label">Recommendations</p>
-            {loadingRecs && (
-              <div className="recs-loading">
-                <span className="recs-spinner" />
-                <span>Generating your path…</span>
-              </div>
-            )}
-            {recError && !loadingRecs && (
-              <p className="recs-error">{recError}</p>
-            )}
-            {!loadingRecs && !recError && recommendations.length === 0 && (
-              <p className="home-panel-empty">
-                Your personalised path of songs appears here.
-              </p>
-            )}
-            {!loadingRecs && recommendations.length > 0 && (
-              <div className="recs-carousel">
-                <div className="recs-carousel-viewport">
-                  <div
-                    className="recs-carousel-track"
-                    style={{
-                      transform: `translateX(-${carouselIndex * 100}%)`,
-                    }}
-                  >
-                    {recommendations.map((track, i) => (
-                      <div
-                        className="recs-carousel-slide"
-                        key={track.id ?? track.spotifyTrackId ?? i}
-                      >
-                        <SongCard
-                          track={track}
-                          stepNumber={i + 1}
-                          active={activeSongIndex === i}
-                          onClick={() =>
-                            setActiveSongIndex((prev) =>
-                              prev === i ? null : i,
-                            )
-                          }
-                        />
-                      </div>
-                    ))}
+          {/* Right — recommendations */}
+          <div className="home-col-right">
+            <div className="home-panel home-panel--songs">
+              <p className="home-panel-label">Recommendations</p>
+              {loadingRecs && (
+                <div className="recs-loading">
+                  <span className="recs-spinner" />
+                  <span>Generating your path…</span>
+                </div>
+              )}
+              {recError && !loadingRecs && (
+                <p className="recs-error">{recError}</p>
+              )}
+              {!loadingRecs && !recError && recommendations.length === 0 && (
+                <p className="home-panel-empty">
+                  Your personalised path of songs appears here.
+                </p>
+              )}
+              {!loadingRecs && recommendations.length > 0 && (
+                <div className="recs-carousel">
+                  <div className="recs-carousel-viewport">
+                    <div
+                      className="recs-carousel-track"
+                      style={{
+                        transform: `translateX(-${carouselIndex * 100}%)`,
+                      }}
+                    >
+                      {recommendations.map((track, i) => (
+                        <div
+                          className="recs-carousel-slide"
+                          key={track.id ?? track.spotifyTrackId ?? i}
+                        >
+                          <SongCard
+                            track={track}
+                            stepNumber={i + 1}
+                            active={activeSongIndex === i}
+                            onClick={() =>
+                              setActiveSongIndex((prev) =>
+                                prev === i ? null : i,
+                              )
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="recs-carousel-controls">
+                    <button
+                      className="recs-carousel-btn"
+                      onClick={() =>
+                        setCarouselIndex((p) => Math.max(0, p - 1))
+                      }
+                      disabled={carouselIndex === 0}
+                      aria-label="Previous song"
+                    >
+                      ‹
+                    </button>
+                    <span className="recs-carousel-counter">
+                      {carouselIndex + 1} / {recommendations.length}
+                    </span>
+                    <button
+                      className="recs-carousel-btn"
+                      onClick={() =>
+                        setCarouselIndex((p) =>
+                          Math.min(recommendations.length - 1, p + 1),
+                        )
+                      }
+                      disabled={carouselIndex === recommendations.length - 1}
+                      aria-label="Next song"
+                    >
+                      ›
+                    </button>
                   </div>
                 </div>
-                <div className="recs-carousel-controls">
-                  <button
-                    className="recs-carousel-btn"
-                    onClick={() => setCarouselIndex((p) => Math.max(0, p - 1))}
-                    disabled={carouselIndex === 0}
-                    aria-label="Previous song"
-                  >
-                    ‹
-                  </button>
-                  <span className="recs-carousel-counter">
-                    {carouselIndex + 1} / {recommendations.length}
-                  </span>
-                  <button
-                    className="recs-carousel-btn"
-                    onClick={() =>
-                      setCarouselIndex((p) =>
-                        Math.min(recommendations.length - 1, p + 1),
-                      )
-                    }
-                    disabled={carouselIndex === recommendations.length - 1}
-                    aria-label="Next song"
-                  >
-                    ›
-                  </button>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </main>

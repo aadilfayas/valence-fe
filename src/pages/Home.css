@@ -120,8 +120,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  padding: 3rem 2.5rem 2.5rem;
+  gap: 2rem;
+  padding: 2.25rem 2.5rem 2.5rem;
   max-width: 1200px;
   width: 100%;
   margin-inline: auto;
@@ -132,7 +132,8 @@
 .home-hero {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.6rem;
+  max-width: 560px;
 }
 
 .home-hero-label {
@@ -160,17 +161,25 @@
   margin: 0;
 }
 
-/* ── Panel grid ── */
-.home-panels {
+/* ── Two-column layout: chat left, recs right ── */
+.home-columns {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 340px 1fr;
   gap: 1.2rem;
   flex: 1;
-  align-items: start;
+  align-items: stretch;
 }
 
-@media (max-width: 860px) {
-  .home-panels {
+.home-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  /* leave room so content doesn't hide behind the fixed HUD */
+  padding-top: 0;
+}
+
+@media (max-width: 960px) {
+  .home-columns {
     grid-template-columns: 1fr;
   }
 }
@@ -189,22 +198,13 @@
 }
 
 .home-panel--chat {
-  min-height: 400px;
-}
-
-.home-panel-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.home-panel--plane {
-  height: 340px;
-  overflow: hidden;
+  min-height: 520px;
+  max-height: calc(100vh - 200px);
 }
 
 .home-panel--songs {
   min-height: 155px;
+  flex: 1;
 }
 
 /* ── Panel typography ── */
@@ -365,9 +365,10 @@
   text-align: center;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 960px) {
   .home-panel--chat {
     min-height: 360px;
+    max-height: none;
   }
 }
 
@@ -395,13 +396,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   Recommendations panel — loading / error states
-══════════════════════════════════════════════════════════════ */
 
-.home-panel--songs {
-  /* override fixed min-height when songs are present */
-  min-height: unset;
-}
 
 /* ══════════════════════════════════════════════════════════════
    Mood Plane HUD — fixed mini-map overlay
@@ -423,9 +418,10 @@
   position: fixed;
   top: 74px;
   right: 1.75rem;
-  width: 300px;
+  width: 340px;
+  height: 280px;
   z-index: 90;
-  background: rgba(4, 6, 12, 0.84);
+  background: rgba(4, 6, 12, 0.88);
   border: 1px solid rgba(74, 143, 194, 0.18);
   border-radius: 12px;
   backdrop-filter: blur(20px);
@@ -435,7 +431,7 @@
   flex-direction: column;
   gap: 0.45rem;
   animation: hudGlow 4s ease-in-out infinite;
-  pointer-events: none; /* let clicks fall through to content behind */
+  pointer-events: none;
 }
 
 /* Corner bracket accents — top-left */
@@ -474,8 +470,17 @@
   margin: 0;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 960px) {
   .home-hud {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    height: 260px;
+    animation: none;
+  }
+  .home-hud::before,
+  .home-hud::after {
     display: none;
   }
 }
