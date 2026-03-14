@@ -51,6 +51,23 @@ const quadrantPlugin = {
       chartArea.bottom - pad + 4,
     );
 
+    // Step-number labels for recommendation track dots
+    const tracksDs = chart.data.datasets.find((d) => d.label === "Tracks");
+    if (tracksDs?.data?.length) {
+      tracksDs.data.forEach((point, i) => {
+        const px = scales.x.getPixelForValue(point.x);
+        const py = scales.y.getPixelForValue(point.y);
+        const isActive = tracksDs._activeIndex === i;
+        ctx.font = `${isActive ? "700" : "500"} 8px system-ui, sans-serif`;
+        ctx.fillStyle = isActive
+          ? "rgba(74,222,128,0.9)"
+          : "rgba(255,255,255,0.45)";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText(String(i + 1), px, py - 5);
+      });
+    }
+
     ctx.restore();
   },
 };
@@ -205,6 +222,33 @@ export default function RussellPlane({
       y: currentMood.arousal,
     };
 
+    // Recommendation tracks plotted by their real valence/energy position
+    const recs = recommendations ?? [];
+    const trackData = recs.map((r) => ({
+      x: r.valence ?? 0,
+      y: r.energy ?? 0,
+    }));
+    const tracksDataset = {
+      label: "Tracks",
+      data: trackData,
+      backgroundColor: trackData.map((_, i) =>
+        i === activeSongIndex
+          ? "rgba(74,222,128,0.9)"
+          : "rgba(255,255,255,0.28)",
+      ),
+      borderColor: trackData.map((_, i) =>
+        i === activeSongIndex
+          ? "rgba(74,222,128,0.5)"
+          : "rgba(255,255,255,0.10)",
+      ),
+      borderWidth: 1.5,
+      pointRadius: trackData.map((_, i) => (i === activeSongIndex ? 6.5 : 3.5)),
+      pointHoverRadius: 5,
+      // store active index so the plugin can read it
+      _activeIndex: activeSongIndex,
+      order: 2,
+    };
+
     return {
       datasets: [
         {
@@ -217,8 +261,9 @@ export default function RussellPlane({
           backgroundColor: "rgba(255,255,255,0.22)",
           pointRadius: 2.5,
           pointHoverRadius: 4,
-          order: 3,
+          order: 4,
         },
+        ...(trackData.length ? [tracksDataset] : []),
         {
           label: "Current Mood",
           data: [dotPos],
@@ -237,12 +282,19 @@ export default function RussellPlane({
           borderWidth: 2,
           pointRadius: 9,
           pointHoverRadius: 11,
-          order: 2,
+          order: 3,
         },
       ],
     };
     // animatedDot drives the blue dot position at ~60fps during a tween
-  }, [currentMood, goalMood, hasMood, animatedDot]);
+  }, [
+    currentMood,
+    goalMood,
+    hasMood,
+    animatedDot,
+    recommendations,
+    activeSongIndex,
+  ]);
 
   // Disable Chart.js internal animation — we drive all movement via rAF
   const options = useMemo(

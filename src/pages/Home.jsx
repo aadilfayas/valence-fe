@@ -94,7 +94,6 @@ export default function Home() {
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [recError, setRecError] = useState(null);
   const [activeSongIndex, setActiveSongIndex] = useState(null);
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const handleLogout = () => {
     logout();
@@ -121,7 +120,6 @@ export default function Home() {
     setLoadingRecs(true);
     setRecError(null);
     setActiveSongIndex(null);
-    setCarouselIndex(0);
     setRecommendations([]);
     try {
       const recs = await getRecommendations(id);
@@ -220,60 +218,18 @@ export default function Home() {
                 </p>
               )}
               {!loadingRecs && recommendations.length > 0 && (
-                <div className="recs-carousel">
-                  <div className="recs-carousel-viewport">
-                    <div
-                      className="recs-carousel-track"
-                      style={{
-                        transform: `translateX(-${carouselIndex * 100}%)`,
-                      }}
-                    >
-                      {recommendations.map((track, i) => (
-                        <div
-                          className="recs-carousel-slide"
-                          key={track.id ?? track.spotifyTrackId ?? i}
-                        >
-                          <SongCard
-                            track={track}
-                            stepNumber={i + 1}
-                            active={activeSongIndex === i}
-                            onClick={() =>
-                              setActiveSongIndex((prev) =>
-                                prev === i ? null : i,
-                              )
-                            }
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="recs-carousel-controls">
-                    <button
-                      className="recs-carousel-btn"
+                <div className="recs-list">
+                  {recommendations.map((track, i) => (
+                    <SongCard
+                      key={track.id ?? track.spotifyTrackId ?? i}
+                      track={track}
+                      stepNumber={i + 1}
+                      active={activeSongIndex === i}
                       onClick={() =>
-                        setCarouselIndex((p) => Math.max(0, p - 1))
+                        setActiveSongIndex((prev) => (prev === i ? null : i))
                       }
-                      disabled={carouselIndex === 0}
-                      aria-label="Previous song"
-                    >
-                      ‹
-                    </button>
-                    <span className="recs-carousel-counter">
-                      {carouselIndex + 1} / {recommendations.length}
-                    </span>
-                    <button
-                      className="recs-carousel-btn"
-                      onClick={() =>
-                        setCarouselIndex((p) =>
-                          Math.min(recommendations.length - 1, p + 1),
-                        )
-                      }
-                      disabled={carouselIndex === recommendations.length - 1}
-                      aria-label="Next song"
-                    >
-                      ›
-                    </button>
-                  </div>
+                    />
+                  ))}
                 </div>
               )}
             </div>
