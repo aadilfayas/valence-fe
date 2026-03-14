@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import {
   getChatQuestions,
@@ -19,8 +19,11 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
   const [error, setError] = useState(null);
   const [currentMood, setCurrentMood] = useState(null);
   const bottomRef = useRef(null);
+  const msgIdRef = useRef(0);
 
-  useEffect(() => {
+  const nextId = useCallback(() => ++msgIdRef.current, []);
+
+  const loadQuestions = useCallback(() => {
     const fallback = [
       "How are you feeling?",
       "What triggered it?",
@@ -29,13 +32,31 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
     getChatQuestions()
       .then((qs) => {
         setQuestions(qs);
-        setMessages([{ role: "bot", text: qs[0] }]);
+        setMessages([{ id: nextId(), role: "bot", text: qs[0] }]);
       })
       .catch(() => {
         setQuestions(fallback);
-        setMessages([{ role: "bot", text: fallback[0] }]);
+        setMessages([{ id: nextId(), role: "bot", text: fallback[0] }]);
       });
-  }, []);
+  }, [nextId]);
+
+  const reset = useCallback(() => {
+    setMessages([]);
+    setInput("");
+    setStep(0);
+    setAnswers([]);
+    setLoading(false);
+    setDone(false);
+    setError(null);
+    setCurrentMood(null);
+    onSessionCreated?.(null);
+    onMoodAnalyzed?.(null);
+    loadQuestions();
+  }, [loadQuestions, onSessionCreated, onMoodAnalyzed]);
+
+  useEffect(() => {
+    loadQuestions();
+  }, [loadQuestions]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -49,7 +70,10 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
     setAnswers(newAnswers);
 
     // Append user message immediately
-    setMessages((prev) => [...prev, { role: "user", text: answer }]);
+    setMessages((prev) => [
+      ...prev,
+      { id: nextId(), role: "user", text: answer },
+    ]);
 
     if (step < questions.length - 1) {
       const nextStep = step + 1;
@@ -61,6 +85,7 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
         try {
           const analysis = await analyzeMood(answer);
           setCurrentMood(analysis);
+          onMoodAnalyzed?.({ currentMood: analysis, goalMood: null });
           const emotionPhrase =
             `I sense ${analysis.emotion} energy in your words ` +
             `(Valence ${Number(analysis.valence).toFixed(2)}, ` +
@@ -68,12 +93,12 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
             questions[nextStep];
           setMessages((prev) => [
             ...prev,
-            { role: "bot", text: emotionPhrase },
+            { id: nextId(), role: "bot", text: emotionPhrase },
           ]);
         } catch {
           setMessages((prev) => [
             ...prev,
-            { role: "bot", text: questions[nextStep] },
+            { id: nextId(), role: "bot", text: questions[nextStep] },
           ]);
         } finally {
           setLoading(false);
@@ -81,7 +106,7 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
       } else {
         setMessages((prev) => [
           ...prev,
-          { role: "bot", text: questions[nextStep] },
+          { id: nextId(), role: "bot", text: questions[nextStep] },
         ]);
       }
     } else {
@@ -103,13 +128,14 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
           goalMessage: newAnswers[2],
         });
 
-        if (currentMood && goalMood) {
+        if (currentMood) {
           onMoodAnalyzed?.({ currentMood, goalMood });
         }
 
         setMessages((prev) => [
           ...prev,
           {
+            id: nextId(),
             role: "bot",
             text: "Your mood has been mapped. Generating your path…",
           },
@@ -134,8 +160,8 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
   return (
     <div className="chat-window">
       <div className="chat-messages">
-        {messages.map((msg, i) => (
-          <MessageBubble key={i} role={msg.role} text={msg.text} />
+        {messages.map((msg) => (
+          <MessageBubble key={msg.id} role={msg.role} text={msg.text} />
         ))}
         {loading && <MessageBubble role="bot" text="…" />}
         <div ref={bottomRef} />
@@ -158,6 +184,11 @@ export default function ChatWindow({ onSessionCreated, onMoodAnalyzed }) {
             Send
           </button>
         </div>
+      )}
+      {done && (
+        <button className="chat-restart-btn" onClick={reset}>
+          Start Over
+        </button>
       )}
       {error && <p className="chat-error">{error}</p>}
     </div>

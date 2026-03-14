@@ -116,6 +116,13 @@ export default function Home() {
   }, [navigate]);
 
   const handleSessionCreated = useCallback(async (id) => {
+    if (id === null) {
+      setSessionId(null);
+      setRecommendations([]);
+      setActiveSongIndex(null);
+      setRecError(null);
+      return;
+    }
     setSessionId(id);
     setLoadingRecs(true);
     setRecError(null);
@@ -133,8 +140,11 @@ export default function Home() {
     }
   }, []);
 
-  const handleMoodAnalyzed = ({ currentMood, goalMood }) => {
-    setMoodData({ currentMood, goalMood });
+  const handleMoodAnalyzed = (mood) => {
+    setMoodData({
+      currentMood: mood?.currentMood ?? null,
+      goalMood: mood?.goalMood ?? null,
+    });
   };
 
   return (
@@ -159,17 +169,6 @@ export default function Home() {
           </button>
         </nav>
       </header>
-
-      {/* ── Mood Plane HUD — fixed top-right mini-map ── */}
-      <div className="home-hud">
-        <p className="home-hud-label">Mood Plane</p>
-        <RussellPlane
-          currentMood={moodData.currentMood}
-          goalMood={moodData.goalMood}
-          recommendations={recommendations}
-          activeSongIndex={activeSongIndex}
-        />
-      </div>
 
       {/* ── Main content ── */}
       <main className="home-main">
@@ -199,8 +198,18 @@ export default function Home() {
             />
           </div>
 
-          {/* Right — recommendations */}
+          {/* Right — mood plane + recommendations */}
           <div className="home-col-right">
+            <div className="home-hud">
+              <p className="home-hud-label">Mood Plane</p>
+              <RussellPlane
+                key={moodData.currentMood ? "active" : "idle"}
+                currentMood={moodData.currentMood}
+                goalMood={moodData.goalMood}
+                recommendations={recommendations}
+                activeSongIndex={activeSongIndex}
+              />
+            </div>
             <div className="home-panel home-panel--songs">
               <p className="home-panel-label">Recommendations</p>
               {loadingRecs && (

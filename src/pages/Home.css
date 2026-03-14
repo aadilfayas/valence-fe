@@ -164,19 +164,21 @@
 /* ── Two-column layout: chat left, recs right ── */
 .home-columns {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: minmax(340px, 400px) 1fr;
   gap: 1.2rem;
   flex: 1;
   align-items: stretch;
 }
 
 .home-col-right {
+  position: sticky;
+  top: 74px;
+  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  /* push content below the fixed HUD (top:74px + height:280px + 1.5rem gap) */
-  padding-top: 120px;
   max-width: 520px;
+  height: calc(100vh - 90px);
 }
 
 @media (max-width: 960px) {
@@ -185,7 +187,8 @@
   }
 
   .home-col-right {
-    padding-top: 0;
+    position: static;
+    height: auto;
     max-width: 100%;
   }
 
@@ -213,10 +216,11 @@
 }
 
 .home-panel--songs {
-  min-height: 155px;
   flex: 1;
+  min-height: 0;
   max-width: 520px;
   width: 100%;
+  overflow: hidden;
 }
 
 /* ── Panel typography ── */
@@ -377,6 +381,29 @@
   text-align: center;
 }
 
+.chat-restart-btn {
+  align-self: center;
+  padding: 0.45rem 1.2rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: rgba(74, 143, 194, 0.6);
+  border: 1px solid rgba(74, 143, 194, 0.22);
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.chat-restart-btn:hover {
+  color: #4a8fc2;
+  border-color: rgba(74, 143, 194, 0.55);
+}
+
 @media (max-width: 960px) {
   .home-panel--chat {
     min-height: 360px;
@@ -387,10 +414,22 @@
 /* ══════════════════════════════════════════════════════════════
    RussellPlane component
 ══════════════════════════════════════════════════════════════ */
+@keyframes planeEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .russell-plane {
   position: relative;
   flex: 1;
   min-height: 0;
+  animation: planeEnter 0.45s ease forwards;
 }
 
 .russell-plane--empty {
@@ -427,12 +466,9 @@
 }
 
 .home-hud {
-  position: fixed;
-  top: 74px;
-  right: 1.75rem;
-  width: 340px;
+  flex-shrink: 0;
+  width: 100%;
   height: 280px;
-  z-index: 90;
   background: rgba(4, 6, 12, 0.88);
   border: 1px solid rgba(74, 143, 194, 0.18);
   border-radius: 12px;
@@ -443,7 +479,7 @@
   flex-direction: column;
   gap: 0.45rem;
   animation: hudGlow 4s ease-in-out infinite;
-  pointer-events: none;
+  box-sizing: border-box;
 }
 
 /* Corner bracket accents — top-left */
@@ -484,10 +520,6 @@
 
 @media (max-width: 960px) {
   .home-hud {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 100%;
     height: 260px;
     animation: none;
   }
@@ -535,7 +567,8 @@
   flex-direction: column;
   gap: 0.6rem;
   overflow-y: auto;
-  max-height: calc(100vh - 260px);
+  flex: 1;
+  min-height: 0;
   padding-right: 0.3rem;
 }
 

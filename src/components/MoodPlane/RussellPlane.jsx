@@ -88,7 +88,7 @@ export default function RussellPlane({
   recommendations,
   activeSongIndex,
 }) {
-  const hasMood = currentMood && goalMood;
+  const hasMood = !!currentMood;
 
   // ── Idle random-walk animation (shown when no mood data) ───────────────────
   const idleRafRef = useRef(null);
@@ -216,7 +216,6 @@ export default function RussellPlane({
   const data = useMemo(() => {
     if (!hasMood) return { datasets: [] };
 
-    const path = interpolatePath(currentMood, goalMood);
     const dotPos = animatedDot ?? {
       x: currentMood.valence,
       y: currentMood.arousal,
@@ -251,18 +250,22 @@ export default function RussellPlane({
 
     return {
       datasets: [
-        {
-          label: "Path",
-          data: path,
-          showLine: true,
-          borderColor: "rgba(255,255,255,0.18)",
-          borderWidth: 1.5,
-          borderDash: [5, 4],
-          backgroundColor: "rgba(255,255,255,0.22)",
-          pointRadius: 2.5,
-          pointHoverRadius: 4,
-          order: 4,
-        },
+        ...(goalMood
+          ? [
+              {
+                label: "Path",
+                data: interpolatePath(currentMood, goalMood),
+                showLine: true,
+                borderColor: "rgba(255,255,255,0.18)",
+                borderWidth: 1.5,
+                borderDash: [5, 4],
+                backgroundColor: "rgba(255,255,255,0.22)",
+                pointRadius: 2.5,
+                pointHoverRadius: 4,
+                order: 4,
+              },
+            ]
+          : []),
         ...(trackData.length ? [tracksDataset] : []),
         {
           label: "Current Mood",
@@ -274,16 +277,20 @@ export default function RussellPlane({
           pointHoverRadius: 11,
           order: 1,
         },
-        {
-          label: "Goal",
-          data: [{ x: goalMood.valence, y: goalMood.arousal }],
-          backgroundColor: "#4ade80",
-          borderColor: "rgba(74,222,128,0.4)",
-          borderWidth: 2,
-          pointRadius: 9,
-          pointHoverRadius: 11,
-          order: 3,
-        },
+        ...(goalMood
+          ? [
+              {
+                label: "Goal",
+                data: [{ x: goalMood.valence, y: goalMood.arousal }],
+                backgroundColor: "#4ade80",
+                borderColor: "rgba(74,222,128,0.4)",
+                borderWidth: 2,
+                pointRadius: 9,
+                pointHoverRadius: 11,
+                order: 3,
+              },
+            ]
+          : []),
       ],
     };
     // animatedDot drives the blue dot position at ~60fps during a tween
@@ -393,6 +400,7 @@ export default function RussellPlane({
     return (
       <div className="russell-plane russell-plane--empty">
         <Scatter data={idleData} options={options} plugins={[quadrantPlugin]} />
+        <p className="russell-plane-hint">Chat to see your mood mapped here.</p>
       </div>
     );
   }
